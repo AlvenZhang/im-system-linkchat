@@ -1,0 +1,90 @@
+# IDE directories and files
+.idea
+.vscode
+*.iml
+*.ipr
+*.iws
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Build output
+target/
+build/
+
+# Logs
+logs/
+*.log
+
+# Maven
+.mvn/
+
+# Gradle
+.gradle/
+gradle.properties
+gradlew
+gradlew.bat
+
+# Test results
+surefire-reports/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Database files
+*.db
+*.sql
+*.sqlite
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# NetBeans
+nbproject/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Sensitive files
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Application specific files
+*.jar
+*.war
+*.ear
+
+# Local configuration files
+application-local.properties
+application-dev.properties
+application-prod.properties
