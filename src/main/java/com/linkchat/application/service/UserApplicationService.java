@@ -62,7 +62,7 @@ public class UserApplicationService {
      * @return 用户DTO
      */
     public UserDTO getUserByUsername(String username) {
-        User user = userRepository.findByUsername(new com.linkchat.domain.user.value.Username(username));
+        User user = userRepository.findByUsername(com.linkchat.domain.user.value.Username.of(username));
         return user != null ? convertToDTO(user) : null;
     }
 
