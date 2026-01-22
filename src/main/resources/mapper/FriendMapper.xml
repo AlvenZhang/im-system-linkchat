@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.linkchat.infrastructure.persistence.mapper.FriendMapper"/>
+    
+    <resultMap id="friendResultMap" type="com.linkchat.infrastructure.persistence.entity.FriendEntity"/>
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="friendId" column="friend_id"/>
+        <result property="status" column="status"/>
+        <result property="remark" column="remark"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+    
+    <select id="selectById" resultMap="friendResultMap">
+        SELECT * FROM friend WHERE id = #{id}
+    </select>
+    
+    <select id="selectByUserIdAndFriendId" resultMap="friendResultMap">
+        SELECT * FROM friend WHERE user_id = #{userId} AND friend_id = #{friendId}
+    </select>
+    
+    <select id="selectByUserId" resultMap="friendResultMap">
+        SELECT * FROM friend WHERE user_id = #{userId}
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+        ORDER BY created_at DESC
+    </select>
+    
+    <select id="selectFriendRequests" resultMap="friendResultMap">
+        SELECT * FROM friend WHERE friend_id = #{friendId} AND status = 0
+        ORDER BY created_at DESC
+    </select>
+    
+    <insert id="insert" parameterType="com.linkchat.infrastructure.persistence.entity.FriendEntity" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO friend (user_id, friend_id, status, created_at, updated_at)
+        VALUES (#{userId}, #{friendId}, #{status}, NOW(), NOW())
+    </insert>
+    
+    <update id="updateStatus">
+        UPDATE friend SET status = #{status}, updated_at = NOW() WHERE id = #{id}
+    </update>
+    
+    <delete id="delete">
+        DELETE FROM friend WHERE id = #{id}
+    </delete>
+    
+    <delete id="deleteByUserIdAndFriendId">
+        DELETE FROM friend WHERE user_id = #{userId} AND friend_id = #{friendId}
+    </delete>
+    
+</mapper>

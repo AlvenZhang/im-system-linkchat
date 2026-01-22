@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.linkchat.mapper.MessageMapper">
+    
+    <resultMap id="messageResultMap" type="com.linkchat.entity.Message">
+        <id property="id" column="id"/>
+        <result property="senderId" column="sender_id"/>
+        <result property="receiverId" column="receiver_id"/>
+        <result property="type" column="type"/>
+        <result property="content" column="content"/>
+        <result property="status" column="status"/>
+        <result property="isGroup" column="is_group"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+    
+    <select id="selectById" resultMap="messageResultMap">
+        SELECT * FROM message WHERE id = #{id}
+    </select>
+    
+    <select id="selectChatHistory" resultMap="messageResultMap">
+        SELECT * FROM message
+        WHERE (
+            (sender_id = #{senderId} AND receiver_id = #{receiverId} AND is_group = 0)
+            OR (sender_id = #{receiverId} AND receiver_id = #{senderId} AND is_group = 0)
+        )
+        ORDER BY created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+    
+    <select id="selectGroupChatHistory" resultMap="messageResultMap">
+        SELECT * FROM message
+        WHERE receiver_id = #{groupId} AND is_group = 1
+        ORDER BY created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+    
+    <select id="countUnreadMessages" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM message
+        WHERE receiver_id = #{receiverId} AND status = 0
+        <if test="isGroup != null">
+            AND is_group = #{isGroup}
+        </if>
+    </select>
+    
+    <insert id="insert" parameterType="com.linkchat.entity.Message" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO message (sender_id, receiver_id, type, content, status, is_group, created_at)
+        VALUES (#{senderId}, #{receiverId}, #{type}, #{content}, #{status}, #{isGroup}, NOW())
+    </insert>
+    
+    <update id="updateStatus">
+        UPDATE message SET status = #{status} WHERE id = #{id}
+    </update>
+    
+    <update id="batchUpdateStatus">
+        UPDATE message SET status = #{status} WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    
+    <update id="updateAllStatusByChatId">
+        UPDATE message SET status = #{status}
+        WHERE receiver_id = #{chatId}
+        AND is_group = #{isGroup}
+        <if test="isGroup == 0">
+            AND sender_id = #{userId}
+        </if>
+    </update>
+    
+    <delete id="delete">
+        DELETE FROM message WHERE id = #{id}
+    </delete>
+    
+</mapper>

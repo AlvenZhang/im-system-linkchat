@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.linkchat.infrastructure.persistence.mapper.GroupMapper"/>
+    
+    <resultMap id="groupResultMap" type="com.linkchat.infrastructure.persistence.entity.GroupEntity"/>
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="avatar" column="avatar"/>
+        <result property="description" column="description"/>
+        <result property="creatorId" column="creator_id"/>
+        <result property="memberCount" column="member_count"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+    
+    <select id="selectById" resultMap="groupResultMap">
+        SELECT * FROM `group` WHERE id = #{id}
+    </select>
+    
+    <select id="selectByCreatorId" resultMap="groupResultMap">
+        SELECT * FROM `group` WHERE creator_id = #{creatorId}
+        ORDER BY created_at DESC
+    </select>
+    
+    <select id="selectAll" resultMap="groupResultMap">
+        SELECT * FROM `group`
+        ORDER BY created_at DESC
+    </select>
+    
+    <insert id="insert" parameterType="com.linkchat.infrastructure.persistence.entity.GroupEntity" useGeneratedKeys="true" keyProperty="id"/>
+        INSERT INTO `group` (name, avatar, description, creator_id, member_count, created_at, updated_at)
+        VALUES (#{name}, #{avatar}, #{description}, #{creatorId}, #{memberCount}, NOW(), NOW())
+    </insert>
+    
+    <update id="update" parameterType="com.linkchat.infrastructure.persistence.entity.GroupEntity"/>
+        UPDATE `group`
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="avatar != null">avatar = #{avatar},</if>
+            <if test="description != null">description = #{description},</if>
+            updated_at = NOW()
+        </set>
+        WHERE id = #{id}
+    </update>
+    
+    <update id="updateMemberCount">
+        UPDATE `group`
+        SET member_count = member_count + #{count}, updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+    
+    <delete id="delete">
+        DELETE FROM `group` WHERE id = #{id}
+    </delete>
+    
+</mapper>

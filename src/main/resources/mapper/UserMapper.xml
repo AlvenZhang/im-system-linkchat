@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.linkchat.mapper.UserMapper">
+<mapper namespace="com.linkchat.infrastructure.persistence.mapper.UserMapper"/>
     
-    <resultMap id="userResultMap" type="com.linkchat.entity.User">
+    <resultMap id="userResultMap" type="com.linkchat.infrastructure.persistence.entity.UserEntity">
         <id property="id" column="id"/>
         <result property="username" column="username"/>
         <result property="password" column="password"/>
@@ -28,12 +28,12 @@
         SELECT * FROM user WHERE email = #{email}
     </select>
     
-    <insert id="insert" parameterType="com.linkchat.entity.User" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="com.linkchat.infrastructure.persistence.entity.UserEntity" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO user (username, password, nickname, avatar, email, phone, status, created_at, updated_at)
         VALUES (#{username}, #{password}, #{nickname}, #{avatar}, #{email}, #{phone}, #{status}, NOW(), NOW())
     </insert>
     
-    <update id="update" parameterType="com.linkchat.entity.User">
+    <update id="update" parameterType="com.linkchat.infrastructure.persistence.entity.UserEntity">
         UPDATE user
         <set>
             <if test="username != null">username = #{username},</if>

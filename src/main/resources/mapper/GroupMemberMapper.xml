@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.linkchat.infrastructure.persistence.mapper.GroupMemberMapper"/>
+    
+    <resultMap id="groupMemberResultMap" type="com.linkchat.infrastructure.persistence.entity.GroupMemberEntity"/>
+        <id property="id" column="id"/>
+        <result property="groupId" column="group_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="role" column="role"/>
+        <result property="joinedAt" column="joined_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+    
+    <select id="selectById" resultMap="groupMemberResultMap">
+        SELECT * FROM group_member WHERE id = #{id}
+    </select>
+    
+    <select id="selectByGroupIdAndUserId" resultMap="groupMemberResultMap">
+        SELECT * FROM group_member WHERE group_id = #{groupId} AND user_id = #{userId}
+    </select>
+    
+    <select id="selectByGroupId" resultMap="groupMemberResultMap">
+        SELECT * FROM group_member WHERE group_id = #{groupId}
+        ORDER BY joined_at DESC
+    </select>
+    
+    <select id="selectByUserId" resultMap="groupMemberResultMap">
+        SELECT * FROM group_member WHERE user_id = #{userId}
+        ORDER BY joined_at DESC
+    </select>
+    
+    <insert id="insert" parameterType="com.linkchat.infrastructure.persistence.entity.GroupMemberEntity" useGeneratedKeys="true" keyProperty="id"/>
+        INSERT INTO group_member (group_id, user_id, role, joined_at, updated_at)
+        VALUES (#{groupId}, #{userId}, #{role}, NOW(), NOW())
+    </insert>
+    
+    <update id="updateRole">
+        UPDATE group_member SET role = #{role}, updated_at = NOW() WHERE id = #{id}
+    </update>
+    
+    <insert id="batchInsert" parameterType="java.util.List">
+        INSERT INTO group_member (group_id, user_id, role, joined_at, updated_at)
+        VALUES
+        <foreach collection="groupMembers" item="member" separator=",">
+            (#{member.groupId}, #{member.userId}, #{member.role}, NOW(), NOW())
+        </foreach>
+    </insert>
+    
+    <delete id="delete">
+        DELETE FROM group_member WHERE id = #{id}
+    </delete>
+    
+    <delete id="deleteByGroupIdAndUserId">
+        DELETE FROM group_member WHERE group_id = #{groupId} AND user_id = #{userId}
+    </delete>
+    
+    <delete id="deleteByGroupId">
+        DELETE FROM group_member WHERE group_id = #{groupId}
+    </delete>
+    
+</mapper>
